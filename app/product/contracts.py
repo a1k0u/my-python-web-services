@@ -1,6 +1,7 @@
 import uuid
 from enum import Enum
 from pydantic import BaseModel
+from pydantic import Field
 
 
 class Categoty(BaseModel):
@@ -15,8 +16,14 @@ class Status(Enum):
 class Product(BaseModel):
     id: uuid.UUID | None = None
     name: str
-    description: str | None = None
-    price: int
-    weight: float
+    description: str | None = Field(
+        default=None, title="The description of the product", max_length=300
+    )
+    price: int = Field(
+        gt=0, description="The price must be greater than zero"
+    )
+    weight: float = Field(
+        gt=0, description="The weight must be greater then zero"
+    )
     category: Categoty | None = None
     status: Status = Status.PRESENT
