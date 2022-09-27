@@ -27,7 +27,7 @@ def add_product(db, item: Product) -> None:
 @db_connection
 def update_product(db, product_id: uuid.UUID, item: Product) -> None:
     index = __find_product(db, product_id)
-    db["product"][index] = db["product"][index].copy(update=item)
+    db["product"][index] = db["product"][index].copy(update=item.__dict__)
 
 
 @db_connection

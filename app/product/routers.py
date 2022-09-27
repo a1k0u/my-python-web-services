@@ -25,8 +25,8 @@ async def add_products(item: Product) -> JSONResponse:
 
 @router.put("/update/{item_id}")
 async def update_product(
-    item_id: uuid.UUID = Path(title="The ID of the item to get"),
-    item: Product = Body(embed=True),
+    item_id: uuid.UUID,
+    item: Product,
 ) -> JSONResponse:
 
     code, response = request.update_product(item_id, item)

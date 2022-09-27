@@ -19,10 +19,12 @@ def db_connection(function: Callable):
     def wrapper(*args, **kwargs) -> (int, Any):
         with shelve.open(db_url, writeback=True) as db:
             code, res = 200, None
+
             try:
                 res = function(db, *args, **kwargs)
-            except KeyError | IndexError:
+            except IndexError:
                 code = 404
+
         return code, res
 
     return wrapper

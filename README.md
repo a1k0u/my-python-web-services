@@ -23,7 +23,7 @@ This will be released in the near future:
 At the moment it looks like this, in the future
 it will be updated, upgraded.
 
-![](db_schema.png)
+![](schema.png)
 
 
 
