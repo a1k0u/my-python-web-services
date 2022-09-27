@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import router
+from app.product.routers import router as product_router
 
 app = FastAPI(
     title="WebService",
@@ -11,4 +11,4 @@ app = FastAPI(
 )
 
 
-app.include_router(router)
+app.include_router(product_router)
