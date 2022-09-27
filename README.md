@@ -58,3 +58,14 @@ uvicorn app.main:app --reload
 ```
 
 ## Run tests
+- Run **module** tests.
+
+```shell
+pytest -v -k "not integration"
+```
+
+- Run **integration** tests.
+
+```shell
+pytest -v -k integration
+```
