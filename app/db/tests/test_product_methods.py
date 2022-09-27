@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from copy import deepcopy
 from app.db.connection import __init_database
@@ -6,60 +8,84 @@ import app.db.method as request
 from dataclasses import dataclass
 
 batches = [
-{
-      "name": "Sup",
-      "description": "So delicious!",
-      "price": 123,
-      "weight": 500,
-      "category": {
-        "name": "First course",
-      },
-      "status": 1
-},
-{
-      "name": "Boom!",
-      "description": "Wow!",
-      "price": 100,
-      "weight": 300,
-      "category": {
-        "name": "Second course",
-      },
-      "status": 0
-}
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66a111",
+        "name": "Sup",
+        "description": "Delicious",
+        "price": 234,
+        "weight": 300,
+        "category": {
+            "name": "First course",
+        },
+        "status": 1,
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66a222",
+        "name": "Porridge",
+        "description": "",
+        "price": 100,
+        "weight": 500,
+        "category": {
+            "name": "Second course",
+        },
+        "status": 0,
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66a333",
+        "name": "Apple",
+        "description": "Green",
+        "price": 300,
+        "weight": 1000,
+        "category": {
+            "name": "First course",
+        },
+        "status": 0,
+    },
 ]
 
 
-@dataclass
-class BatchUnit:
-    batch: dict
-    code: int
-
-
 @pytest.fixture
-def clear_database():
+def clear_tables():
     request.__delete_tables()
 
 
-@pytest.mark.parametrize("product", [BatchUnit(batch, 200) for batch in batches])
-def test_product_methods(product):
-    request.__delete_tables()
-    code, response = request.add_product(Product(**product.batch))
-    assert code == product.code
-    assert response is None
+def test_add_product(clear_tables):
+    for batch in batches:
+        code, response = request.add_product(Product(**batch))
+        assert code == 200
 
-    code, products = request.get_products()
-    assert len(products) == 1
 
-    product_id = products[0].id
-    updated_batch = deepcopy(product.batch)
-    updated_batch["name"] = "Updated_batch"
+@pytest.mark.parametrize("q, amount", [(True, 1), (False, 2), (None, 3)])
+def test_get_products(q: bool, amount: int):
+    code, response = request.get_products(q)
+    assert len(response) == amount
 
-    # code, response = request.update_product(product_id, updated_batch)
-    #assert code == 200
 
-    #code, products = request.get_products()
-    #assert products[0]["name"] == updated_batch["name"]
+@pytest.mark.parametrize(
+    "id, expected_code",
+    [
+        (uuid.UUID("3fa85f64-5717-4562-b3fc-2c963f66a111"), 200),
+        (uuid.UUID("3fa85f64-5717-4562-b3fc-2c963f66a222"), 200),
+        (uuid.UUID("3fa85f64-5717-4562-b3fc-2c963f66a444"), 404),
+    ],
+)
+def test_delete_product(id: uuid.UUID, expected_code: int):
+    code, response = request.delete_product(id)
+    assert code == expected_code
 
-    code, response = request.delete_product(product_id)
-    assert len(request.get_products()[1]) == 0
-    assert code == 200
+
+@pytest.mark.parametrize(
+    "id, values, expected_code",
+    [
+        (uuid.UUID("3fa85f64-5717-4562-b3fc-2c963f66a333"), {"price": 55}, 200),
+        (uuid.UUID("3fa85f64-5717-4562-b3fc-2c963f66a444"), {}, 404),
+    ],
+)
+def test_update_product(id: uuid.UUID, values: dict, expected_code: int):
+    code, response = request.update_product(id, values)
+    assert code == expected_code
+
+
+def test_foo():
+    code, response = request.get_products()
+    assert len(response) == 1

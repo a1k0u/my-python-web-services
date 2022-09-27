@@ -1,9 +1,10 @@
+from fastapi import APIRouter, Path, Body, Query
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import HTTPException
+
 import uuid
 
-from fastapi import APIRouter, Path, Body
-from fastapi.responses import JSONResponse
 from app.product.contracts import Product
-from app.product.contracts import Categoty
 import app.db.method as request
 
 
@@ -11,63 +12,35 @@ router = APIRouter(prefix="/product")
 
 
 @router.get("/all")
-async def get_all_products():
-    """
-    get_all_products
-        Returns all products from database.
-
-    Returns:
-        dict : {
-            code: int,
-            products: list[Products]
-        }
-    """
-
-    code, response = request.get_products()
-    return {"code": code, "products": response}
-
-
-@router.get("/all/categories")
-async def get_all_categories() -> None:
-    ...
-
-
-@router.post("/add/category")
-async def add_category(item: Categoty) -> None:
-    ...
+async def get_all_products(status: bool | None = Query(None)):
+    code, response = request.get_products(status)
+    return {"products": response}
 
 
 @router.post("/add")
 async def add_products(item: Product) -> JSONResponse:
-    """
-    add_products
-        Adds product in a database.
-
-    Args:
-        item (Product)
-
-    Returns:
-        JSONResponse: {
-            code: int
-        }
-    """
-
-    code, response = request.add_product(item)
-    return JSONResponse({"code": code})
+    request.add_product(item)
+    return JSONResponse({"message": "ok"}, status_code=200)
 
 
-@router.put("/update/{product_id}")
+@router.put("/update/{item_id}")
 async def update_product(
     item_id: uuid.UUID = Path(title="The ID of the item to get"),
     item: Product = Body(embed=True),
 ) -> JSONResponse:
+
     code, response = request.update_product(item_id, item)
+    if code == 404:
+        raise HTTPException(detail="Product doesn't find", status_code=404)
     return JSONResponse({"code": code})
 
 
-@router.delete("/delete/{product_id}")
+@router.delete("/delete/{item_id}")
 async def delete_product(
-    item_id: uuid.UUID = Path(title="The ID of the item to get"),
+    item_id: uuid.UUID,
 ) -> JSONResponse:
+
     code, response = request.delete_product(item_id)
-    return JSONResponse({"code": code})
+    if code == 404:
+        raise HTTPException(detail="Product doesn't find", status_code=404)
+    return JSONResponse({"msg": "ok"}, status_code=200)
