@@ -12,8 +12,8 @@ router = APIRouter(prefix="/product")
 
 @router.get("/all")
 async def get_all_products():
-    items = request.get_products()
-    return {"products": items}, 200
+    code, response = request.get_products()
+    return {"code": code, "products": response}
 
 
 @router.get("/all/categories")
@@ -28,17 +28,17 @@ async def add_category(item: Categoty):
 
 @router.post("/add")
 async def add_products(item: Product):
-    request.add_product(item)
-    return JSONResponse({"code": 200}), 200
+    code, response = request.add_product(item)
+    return JSONResponse({"code": code})
 
 
 @router.put("/update/{product_id}")
 async def update_product(item_id: uuid.UUID, item: Product):
-    request.update_product(item_id, item)
-    return JSONResponse({"code": 200}), 200  # TODO: if product doesn't exist
+    code, response = request.update_product(item_id, item)
+    return JSONResponse({"code": code})
 
 
 @router.delete("/delete/{product_id}")
 async def delete_product(item_id: uuid.UUID):
-    request.delete_product(item_id)
-    return JSONResponse({"code": 200})
+    code, response = request.delete_product(item_id)
+    return JSONResponse({"code": code})
