@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rservice.proto\"!\n\x0bTaskRequest\x12\x12\n\ntask_count\x18\x01 \x01(\x05\"+\n\x0cTaskResponse\x12\x0c\n\x04task\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\x05\x32.\n\x04Task\x12&\n\x07GetTask\x12\x0c.TaskRequest\x1a\r.TaskResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rservice.proto\"!\n\x0bTaskRequest\x12\x12\n\ntask_count\x18\x01 \x01(\x05\"+\n\x0cTaskResponse\x12\x0c\n\x04task\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\x08\x32.\n\x04Task\x12&\n\x07GetTask\x12\x0c.TaskRequest\x1a\r.TaskResponseb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'service_pb2', globals())

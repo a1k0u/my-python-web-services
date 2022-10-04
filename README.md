@@ -27,21 +27,15 @@ poetry install
 python -m grpc_tools.protoc -I definitions/ --python_out=definitions/builds/ --grpc_python_out=definitions/builds/ definitions/service.proto
 ```
 
-- Run uvicorn with instance of app:
+- Run server.
 
 ```shell
-uvicorn app.main:app --reload
+python3 -m app
 ```
 
 ## Run tests
-- Run **module** tests.
+- Run tests.
 
 ```shell
-pytest -v -k "not integration"
-```
-
-- Run **integration** tests.
-
-```shell
-pytest -v -k integration
+pytest
 ```

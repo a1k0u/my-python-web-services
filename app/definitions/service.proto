@@ -6,7 +6,7 @@ message TaskRequest {
 
 message TaskResponse {
   string task = 1;
-  int32 error = 2;
+  bool error = 2;
 }
 
 service Task {

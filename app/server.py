@@ -1,48 +1,59 @@
 """
-
+Server which returns tasks for users.
 """
 
-import logging
-
-from concurrent.futures import ThreadPoolExecutor
 import grpc
+from concurrent.futures import ThreadPoolExecutor
+
+import app.definitions.builds.service_pb2 as service_pb2
+import app.definitions.builds.service_pb2_grpc as service_pb2_grpc
+from app.utils.logger import logger as log
+from app.questions.questions import get_task
 
 
-from definitions.builds.service_pb2_grpc import TaskServicer
-from definitions.builds.service_pb2_grpc import add_TaskServicer_to_server
-import definitions.builds.service_pb2 as service_pb2
-from questions.questions import questions
+class Service(service_pb2_grpc.TaskServicer):
+    def GetTask(
+        self, request: service_pb2.TaskRequest, context
+    ) -> service_pb2.TaskResponse:
+        """
+        GetTask
+            Each user from the chat have to send a message,
+            after that thier task will change.
 
+        Information about how many messages they
+        was sent in session storage in another server.
 
-def __validate_data(task_count) -> bool:
-    if not (0 <= task_count < len(questions)):
-        return False
-    return True
+        Args:
+            request (service_pb2.TaskRequest)
+            context (_type_)
 
+        Returns:
+            service_pb2.TaskResponse
+                task: str
+                error: bool
+        """
 
-def __get_task(task_count: int) -> str:
-    return questions[task_count // 2]
+        log.debug("Get a request...")
 
-
-class Service(TaskServicer):
-    def GetTask(self, request, context):
         response = service_pb2.TaskResponse()
-        response.error = 1
-        response.task = "abac"
-        print(1)
+        response.task, response.error = get_task(request.task_count)
+
+        log.debug("Response is done...")
+
         return response
 
 
 def run_server():
+    """
+    run_server
+        Starts server at localhost:8080.
+    """
+
     server = grpc.server(ThreadPoolExecutor(max_workers=10))
-    add_TaskServicer_to_server(Service(), server)
+    service_pb2_grpc.add_TaskServicer_to_server(Service(), server)
     server.add_insecure_port("[::]:8080")
     server.start()
 
-    logging.debug("The server is up and running ...")
+    log.debug("The server is up and running ...")
 
     server.wait_for_termination()
-
-
-if __name__ == "__main__":
-    run_server()
