@@ -33,6 +33,12 @@ python -m grpc_tools.protoc -I definitions/ --python_out=definitions/builds/ --g
 python3 -m app
 ```
 
+- Run client:
+
+```shell
+python3 -m app.client
+```
+
 ## Run tests
 - Run tests:
 

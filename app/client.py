@@ -34,3 +34,7 @@ def main(task_count: int) -> service_pb2.TaskResponse:
         log.debug("Get response from server...")
 
         return response
+
+
+if __name__ == "__main__":
+    log.debug(f"Get task: {main(2)}")
