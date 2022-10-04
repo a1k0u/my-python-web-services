@@ -21,20 +21,20 @@ poetry install
 ```
 
 ## Start project
-- Compile proto file.
+- Compile proto file:
 
 ```shell
 python -m grpc_tools.protoc -I definitions/ --python_out=definitions/builds/ --grpc_python_out=definitions/builds/ definitions/service.proto
 ```
 
-- Run server.
+- Run server:
 
 ```shell
 python3 -m app
 ```
 
 ## Run tests
-- Run tests.
+- Run tests:
 
 ```shell
 pytest
